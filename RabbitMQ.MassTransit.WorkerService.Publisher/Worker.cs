@@ -5,7 +5,7 @@ namespace RabbitMQ.MassTransit.WorkerService.Publisher
 {
     public class Worker : BackgroundService
     {
-        readonly IPublishEndpoint _publishEndpoint;
+        private readonly IPublishEndpoint _publishEndpoint;
 
         public Worker(IPublishEndpoint publishEndpoint)
         {
@@ -20,7 +20,7 @@ namespace RabbitMQ.MassTransit.WorkerService.Publisher
             {
                 SampleMessage message = new SampleMessage
                 {
-                    Text = $"Message {i++} at {DateTime.Now}"
+                    Text = $"Message {i++} at {DateTime.Now:MM/dd/yyyy hh:mm:ss.fff}"
                 };
 
                 await _publishEndpoint.Publish<IMessage>(message, stoppingToken)
@@ -31,7 +31,7 @@ namespace RabbitMQ.MassTransit.WorkerService.Publisher
                             Console.WriteLine($"Error publishing message: {task.Exception?.GetBaseException().Message}");
                         }
                     }, stoppingToken);
-                Thread.Sleep(1000); // Sleep for 1 second before sending the next message
+                Thread.Sleep(500);
                 if (stoppingToken.IsCancellationRequested)
                 {
                     break;
